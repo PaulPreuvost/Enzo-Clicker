@@ -8,28 +8,37 @@ interface CookieComponentProps {
   username: string;
 }
 
+interface UserData {
+  password: string;
+  scores: Record<string, number>;
+}
+
 const CookieComponent: React.FC<CookieComponentProps> = ({ username }) => {
   const [cookies, setCookies] = useState<number>(0);
   const [showEnzo, setShowEnzo] = useState<boolean>(false);
   const [enzoSrc, setEnzoSrc] = useState<string>("");
 
-  // Charger les points au démarrage
-  useEffect(() => {
-    const userData = localStorage.getItem(`user_${username}`);
-    if (userData) {
-      setCookies(JSON.parse(userData).points || 0);
-    }
-  }, [username]);
+  const today = new Date().toISOString().slice(0, 10);
 
-  // Sauvegarder les points à chaque changement
+  // Charger le score du jour au démarrage
   useEffect(() => {
-    const userData = localStorage.getItem(`user_${username}`);
-    if (userData) {
-      const data = JSON.parse(userData);
-      data.points = cookies;
-      localStorage.setItem(`user_${username}`, JSON.stringify(data));
+    const userDataRaw = localStorage.getItem(`user_${username}`);
+    if (userDataRaw) {
+      const userData: UserData = JSON.parse(userDataRaw);
+      setCookies(userData.scores?.[today] || 0);
     }
-  }, [cookies, username]);
+  }, [username, today]);
+
+  // Sauvegarder le score du jour à chaque changement
+  useEffect(() => {
+    const userDataRaw = localStorage.getItem(`user_${username}`);
+    if (userDataRaw) {
+      const userData: UserData = JSON.parse(userDataRaw);
+      userData.scores = userData.scores || {};
+      userData.scores[today] = cookies;
+      localStorage.setItem(`user_${username}`, JSON.stringify(userData));
+    }
+  }, [cookies, username, today]);
 
   const handleClick = () => {
     const newCookies = cookies + 1;
@@ -48,7 +57,7 @@ const CookieComponent: React.FC<CookieComponentProps> = ({ username }) => {
 
   return (
     <div style={{ position: "relative", minHeight: "300px" }}>
-      <h2>Cookies: {cookies}</h2>
+      <h2>Cookies aujourd'hui : {cookies}</h2>
       <button onClick={handleClick} style={{ fontSize: "2rem" }}>🍪 Cliquer !</button>
       {showEnzo && (
         <EnzoImage src={enzoSrc} onAnimationEnd={handleAnimationEnd} />
