@@ -1,18 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EnzoImage from "./EnzoImageComponent";
 
-// Import dynamique de toutes les images du dossier enzo (Vite)
 const images = import.meta.glob<{ default: string }>("../assets/enzo/*.png", { eager: true });
 const enzoImages: string[] = Object.values(images).map((mod) => mod.default);
 
 interface CookieComponentProps {
-  initialCookies?: number;
+  username: string;
 }
 
-const CookieComponent: React.FC<CookieComponentProps> = ({ initialCookies = 0 }) => {
-  const [cookies, setCookies] = useState<number>(initialCookies);
+const CookieComponent: React.FC<CookieComponentProps> = ({ username }) => {
+  const [cookies, setCookies] = useState<number>(0);
   const [showEnzo, setShowEnzo] = useState<boolean>(false);
   const [enzoSrc, setEnzoSrc] = useState<string>("");
+
+  // Charger les points au démarrage
+  useEffect(() => {
+    const userData = localStorage.getItem(`user_${username}`);
+    if (userData) {
+      setCookies(JSON.parse(userData).points || 0);
+    }
+  }, [username]);
+
+  // Sauvegarder les points à chaque changement
+  useEffect(() => {
+    const userData = localStorage.getItem(`user_${username}`);
+    if (userData) {
+      const data = JSON.parse(userData);
+      data.points = cookies;
+      localStorage.setItem(`user_${username}`, JSON.stringify(data));
+    }
+  }, [cookies, username]);
 
   const handleClick = () => {
     const newCookies = cookies + 1;
