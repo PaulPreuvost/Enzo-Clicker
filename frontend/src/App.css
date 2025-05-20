@@ -40,3 +40,12 @@
 .read-the-docs {
   color: #888;
 }
+
+.centered-title {
+  position: absolute;
+  left: 55%;
+  transform: translateX(-50%);
+  top: 40px;
+  width: max-content;
+  z-index: 10;
+}

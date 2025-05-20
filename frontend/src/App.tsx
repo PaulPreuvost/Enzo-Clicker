@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Auth from "./components/Auth";
 import CookieComponent from "./components/CookieComponent";
@@ -20,7 +20,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <h1>Enzo Cookie Clicker</h1>
+        <h1 className="centered-title">Enzo Cookie Clicker</h1>
         {username && (
           <button onClick={handleLogout} style={{ position: "absolute", right: 20, top: 20 }}>
             Déconnexion
