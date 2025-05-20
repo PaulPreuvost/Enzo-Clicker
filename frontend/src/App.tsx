@@ -20,7 +20,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <h1 className="centered-title">Enzo Cookie Clicker</h1>
+        <h1 className="centered-title">Enzo Clicker</h1>
         {username && (
           <button onClick={handleLogout} style={{ position: "absolute", right: 20, top: 20 }}>
             Déconnexion
